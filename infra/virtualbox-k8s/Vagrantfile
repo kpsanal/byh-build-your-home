@@ -1,0 +1,38 @@
+# Vagrantfile to create a small k8s cluster on VirtualBox
+# Set VAGRANT_BOX to an Ubuntu 26 LTS box if available, otherwise update to your box
+VAGRANT_BOX = ENV['VAGRANT_BOX'] || "generic/ubuntu2604"
+
+NODES = [
+  { name: "k8s-master", cpus: 2, memory: 2048, ip: "192.168.56.10", role: "master" },
+  { name: "k8s-worker1", cpus: 2, memory: 2048, ip: "192.168.56.11", role: "worker" },
+  { name: "k8s-worker2", cpus: 2, memory: 2048, ip: "192.168.56.12", role: "worker" },
+]
+
+Vagrant.configure("2") do |config|
+  config.vm.box_check_update = false
+  config.vm.synced_folder ".", "/vagrant", type: "virtualbox"
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.customize ["modifyvm", :id, "--usb", "off"]
+  end
+
+  NODES.each do |node|
+    config.vm.define node[:name] do |node_config|
+      node_config.vm.box = VAGRANT_BOX
+      node_config.vm.hostname = node[:name]
+      node_config.vm.network "private_network", ip: node[:ip]
+
+      node_config.vm.provider "virtualbox" do |vb|
+        vb.name = node[:name]
+        vb.cpus = node[:cpus]
+        vb.memory = node[:memory]
+      end
+
+      # Common provisioning uses the bootstrap script and passes role
+      node_config.vm.provision "shell" do |s|
+        s.path = "scripts/bootstrap.sh"
+        s.args = node[:role]
+      end
+    end
+  end
+end
