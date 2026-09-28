@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { projectAPI, expenseAPI, reportAPI } from '../services/api';
+import { formatCurrency, formatDate } from '../services/format';
 import './Dashboard.css';
 
 function Dashboard() {
@@ -52,7 +53,7 @@ function Dashboard() {
       <div className="stats-grid">
         <div className="stat-card">
           <h3>Total Expenses</h3>
-          <p className="stat-value">${totalExpenses.toFixed(2)}</p>
+          <p className="stat-value">{formatCurrency(totalExpenses)}</p>
           <span className="stat-label">{expenses.length} transactions</span>
         </div>
 
@@ -65,7 +66,7 @@ function Dashboard() {
         <div className="stat-card">
           <h3>Average Expense</h3>
           <p className="stat-value">
-            ${expenses.length > 0 ? (totalExpenses / expenses.length).toFixed(2) : 0}
+            {formatCurrency(expenses.length > 0 ? totalExpenses / expenses.length : 0)}
           </p>
           <span className="stat-label">Per transaction</span>
         </div>
@@ -73,7 +74,7 @@ function Dashboard() {
         <div className="stat-card">
           <h3>Recent Expense</h3>
           <p className="stat-value">
-            ${expenses.length > 0 ? expenses[0].amount.toFixed(2) : 0}
+            {formatCurrency(expenses.length > 0 ? expenses[0].amount : 0)}
           </p>
           <span className="stat-label">Latest entry</span>
         </div>
@@ -96,8 +97,8 @@ function Dashboard() {
                 {expenses.slice(0, 5).map(exp => (
                   <tr key={exp.id}>
                     <td>{exp.vendor || 'N/A'}</td>
-                    <td>${exp.amount.toFixed(2)}</td>
-                    <td>{new Date(exp.date).toLocaleDateString()}</td>
+                    <td>{formatCurrency(exp.amount)}</td>
+                    <td>{formatDate(exp.date)}</td>
                     <td>{exp.description || 'N/A'}</td>
                   </tr>
                 ))}
@@ -122,7 +123,7 @@ function Dashboard() {
                     ></div>
                   </div>
                   <p className="budget-text">
-                    ${project.spent.toFixed(2)} / ${project.budget.toFixed(2)}
+                    {formatCurrency(project.spent)} / {formatCurrency(project.budget)}
                   </p>
                 </div>
               ))}

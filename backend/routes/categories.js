@@ -4,7 +4,6 @@ const auth = require('../middleware/auth');
 const Database = require('../db/database');
 
 const db = new Database();
-db.initialize();
 
 // Get all categories
 router.get('/', auth, async (req, res) => {
@@ -57,8 +56,8 @@ router.put('/:id', auth, async (req, res) => {
     }
 
     await db.run(
-      'UPDATE categories SET name = ?, color = ? WHERE id = ?',
-      [name, color, req.params.id]
+      'UPDATE categories SET name = ?, color = ? WHERE id = ? AND user_id = ?',
+      [name, color, req.params.id, req.userId]
     );
 
     res.json({ message: 'Category updated successfully' });
@@ -79,7 +78,7 @@ router.delete('/:id', auth, async (req, res) => {
       return res.status(404).json({ error: 'Category not found' });
     }
 
-    await db.run('DELETE FROM categories WHERE id = ?', [req.params.id]);
+    await db.run('DELETE FROM categories WHERE id = ? AND user_id = ?', [req.params.id, req.userId]);
     res.json({ message: 'Category deleted successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });

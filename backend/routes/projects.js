@@ -4,7 +4,6 @@ const auth = require('../middleware/auth');
 const Database = require('../db/database');
 
 const db = new Database();
-db.initialize();
 
 // Get all projects
 router.get('/', auth, async (req, res) => {
@@ -73,8 +72,8 @@ router.put('/:id', auth, async (req, res) => {
     }
 
     await db.run(
-      'UPDATE projects SET name = ?, description = ?, location = ?, start_date = ?, end_date = ?, budget = ? WHERE id = ?',
-      [name, description, location, start_date, end_date, budget, req.params.id]
+      'UPDATE projects SET name = ?, description = ?, location = ?, start_date = ?, end_date = ?, budget = ? WHERE id = ? AND user_id = ?',
+      [name, description, location, start_date, end_date, budget, req.params.id, req.userId]
     );
 
     res.json({ message: 'Project updated successfully' });
@@ -95,7 +94,7 @@ router.delete('/:id', auth, async (req, res) => {
       return res.status(404).json({ error: 'Project not found' });
     }
 
-    await db.run('DELETE FROM projects WHERE id = ?', [req.params.id]);
+    await db.run('DELETE FROM projects WHERE id = ? AND user_id = ?', [req.params.id, req.userId]);
     res.json({ message: 'Project deleted successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });

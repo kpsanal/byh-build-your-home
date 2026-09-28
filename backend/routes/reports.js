@@ -4,7 +4,6 @@ const auth = require('../middleware/auth');
 const Database = require('../db/database');
 
 const db = new Database();
-db.initialize();
 
 // Get expense summary by category
 router.get('/summary/category', auth, async (req, res) => {
@@ -74,13 +73,16 @@ router.get('/summary/date-range', auth, async (req, res) => {
 // Get monthly expense trend
 router.get('/trend/monthly', auth, async (req, res) => {
   try {
+    const monthExpression = db.usePostgres
+      ? "TO_CHAR(DATE_TRUNC('month', date), 'YYYY-MM')"
+      : "strftime('%Y-%m', date)";
     const trend = await db.all(`
       SELECT 
-        strftime('%Y-%m', date) as month,
+        ${monthExpression} as month,
         SUM(amount) as total
       FROM expenses
       WHERE user_id = ?
-      GROUP BY strftime('%Y-%m', date)
+      GROUP BY ${monthExpression}
       ORDER BY month DESC
       LIMIT 12
     `, [req.userId]);

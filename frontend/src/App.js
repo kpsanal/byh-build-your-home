@@ -7,6 +7,7 @@ import Dashboard from './pages/Dashboard';
 import ProjectsPage from './pages/ProjectsPage';
 import ExpensesPage from './pages/ExpensesPage';
 import ReportsPage from './pages/ReportsPage';
+import PlanPage from './pages/PlanPage';
 import Navigation from './components/Navigation';
 
 function App() {
@@ -60,6 +61,10 @@ function App() {
           <Route 
             path="/expenses" 
             element={isAuthenticated ? <ExpensesPage /> : <Navigate to="/login" />} 
+          />
+          <Route
+            path="/plan"
+            element={isAuthenticated ? <PlanPage /> : <Navigate to="/login" />}
           />
           <Route 
             path="/reports" 

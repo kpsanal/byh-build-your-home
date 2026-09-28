@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { expenseAPI, projectAPI, categoryAPI } from '../services/api';
+import { formatCurrency, formatDate } from '../services/format';
 import './ExpensesPage.css';
 
 function ExpensesPage() {
@@ -51,11 +52,17 @@ function ExpensesPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const payload = {
+      ...formData,
+      project_id: formData.project_id || null,
+      category_id: formData.category_id || null,
+      amount: Number(formData.amount)
+    };
     try {
       if (editingId) {
-        await expenseAPI.update(editingId, formData);
+        await expenseAPI.update(editingId, payload);
       } else {
-        await expenseAPI.create(formData);
+        await expenseAPI.create(payload);
       }
       resetForm();
       fetchData();
@@ -251,9 +258,9 @@ function ExpensesPage() {
             <tbody>
               {filteredExpenses.map(exp => (
                 <tr key={exp.id}>
-                  <td>{new Date(exp.date).toLocaleDateString()}</td>
+                  <td>{formatDate(exp.date)}</td>
                   <td>{exp.vendor || 'N/A'}</td>
-                  <td className="amount">${exp.amount.toFixed(2)}</td>
+                  <td className="amount">{formatCurrency(exp.amount)}</td>
                   <td>{getCategoryName(exp.category_id)}</td>
                   <td>{getProjectName(exp.project_id)}</td>
                   <td>{exp.payment_method || 'N/A'}</td>

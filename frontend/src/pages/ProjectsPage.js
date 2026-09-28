@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { projectAPI } from '../services/api';
+import { formatCurrency, formatDate } from '../services/format';
 import './ProjectsPage.css';
 
 function ProjectsPage() {
@@ -170,13 +171,13 @@ function ProjectsPage() {
             <div key={project.id} className="project-card">
               <div className="project-header">
                 <h3>{project.name}</h3>
-                <span className="project-budget">${project.budget || 0}</span>
+                <span className="project-budget">{formatCurrency(project.budget)}</span>
               </div>
               {project.location && <p className="project-location">📍 {project.location}</p>}
               {project.description && <p>{project.description}</p>}
               <div className="project-dates">
-                {project.start_date && <span>Start: {new Date(project.start_date).toLocaleDateString()}</span>}
-                {project.end_date && <span>End: {new Date(project.end_date).toLocaleDateString()}</span>}
+                {project.start_date && <span>Start: {formatDate(project.start_date)}</span>}
+                {project.end_date && <span>End: {formatDate(project.end_date)}</span>}
               </div>
               <div className="project-actions">
                 <button onClick={() => handleEdit(project)}>Edit</button>

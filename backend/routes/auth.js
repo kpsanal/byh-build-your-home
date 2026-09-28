@@ -5,22 +5,25 @@ const jwt = require('jsonwebtoken');
 const Database = require('../db/database');
 
 const db = new Database();
-db.initialize();
 
 // Register
 router.post('/register', async (req, res) => {
   try {
     const { email, password, name } = req.body;
 
-    if (!email || !password || !name) {
-      return res.status(400).json({ error: 'Missing required fields' });
+    if (!email?.trim() || !password || !name?.trim()) {
+      return res.status(400).json({ error: 'Email, password, and name are required' });
+    }
+
+    if (password.length < 8) {
+      return res.status(400).json({ error: 'Password must be at least 8 characters' });
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const result = await db.run(
       'INSERT INTO users (email, password, name) VALUES (?, ?, ?)',
-      [email, hashedPassword, name]
+      [email.trim().toLowerCase(), hashedPassword, name.trim()]
     );
 
     res.status(201).json({ 
@@ -28,7 +31,7 @@ router.post('/register', async (req, res) => {
       userId: result.id 
     });
   } catch (err) {
-    if (err.message.includes('UNIQUE constraint failed')) {
+    if (err.code === '23505' || err.message.includes('UNIQUE constraint failed')) {
       return res.status(400).json({ error: 'Email already exists' });
     }
     res.status(500).json({ error: err.message });
@@ -44,7 +47,7 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ error: 'Missing email or password' });
     }
 
-    const user = await db.get('SELECT * FROM users WHERE email = ?', [email]);
+    const user = await db.get('SELECT * FROM users WHERE email = ?', [email.trim().toLowerCase()]);
 
     if (!user) {
       return res.status(401).json({ error: 'Invalid credentials' });

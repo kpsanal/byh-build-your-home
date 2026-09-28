@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { reportAPI, projectAPI } from '../services/api';
+import { formatCurrency } from '../services/format';
 import './ReportsPage.css';
 
 function ReportsPage() {
@@ -60,7 +61,7 @@ function ReportsPage() {
                     ></div>
                   </div>
                   <div className="chart-stats">
-                    <span>${(cat.total || 0).toFixed(2)}</span>
+                    <span>{formatCurrency(cat.total)}</span>
                     <span>{cat.count || 0} items</span>
                   </div>
                 </div>
@@ -82,7 +83,7 @@ function ReportsPage() {
                   <div key={proj.id} className={`project-item ${status}`}>
                     <div className="project-info">
                       <h4>{proj.name}</h4>
-                      <p>Budget: ${(proj.budget || 0).toFixed(2)}</p>
+                      <p>Budget: {formatCurrency(proj.budget)}</p>
                     </div>
                     <div className="project-progress">
                       <div className="progress-bar">
@@ -92,7 +93,7 @@ function ReportsPage() {
                         ></div>
                       </div>
                       <div className="progress-text">
-                        <span>${(proj.total_spent || 0).toFixed(2)}</span>
+                        <span>{formatCurrency(proj.total_spent)}</span>
                         <span>{percentage.toFixed(1)}%</span>
                       </div>
                     </div>
@@ -111,11 +112,11 @@ function ReportsPage() {
         <div className="summary-stats">
           <div className="summary-item">
             <label>Total Expenses</label>
-            <p>${Math.max(totalByCategory, totalByProject).toFixed(2)}</p>
+            <p>{formatCurrency(Math.max(totalByCategory, totalByProject))}</p>
           </div>
           <div className="summary-item">
             <label>Total Budget</label>
-            <p>${summary.project.reduce((sum, p) => sum + (p.budget || 0), 0).toFixed(2)}</p>
+            <p>{formatCurrency(summary.project.reduce((sum, p) => sum + (Number(p.budget) || 0), 0))}</p>
           </div>
           <div className="summary-item">
             <label>Categories</label>

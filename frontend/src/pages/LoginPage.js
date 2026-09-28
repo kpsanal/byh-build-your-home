@@ -29,7 +29,7 @@ function LoginPage({ onLogin }) {
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <h1>Construction Expense Manager</h1>
+        <h1>HomeBuild</h1>
         <h2>Login</h2>
         
         {error && <div className="alert error">{error}</div>}
@@ -39,6 +39,7 @@ function LoginPage({ onLogin }) {
             <label>Email</label>
             <input
               type="email"
+              autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -49,6 +50,7 @@ function LoginPage({ onLogin }) {
             <label>Password</label>
             <input
               type="password"
+              autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required

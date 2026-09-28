@@ -14,13 +14,14 @@ function Navigation({ user, onLogout }) {
     <nav className="navbar">
       <div className="nav-container">
         <Link to="/" className="nav-logo">
-          🏗️ Expense Manager
+          HomeBuild
         </Link>
 
         <div className="nav-menu">
           <Link to="/" className="nav-link">Dashboard</Link>
           <Link to="/projects" className="nav-link">Projects</Link>
           <Link to="/expenses" className="nav-link">Expenses</Link>
+          <Link to="/plan" className="nav-link">Build plan</Link>
           <Link to="/reports" className="nav-link">Reports</Link>
         </div>
 

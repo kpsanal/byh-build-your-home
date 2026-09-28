@@ -38,7 +38,7 @@ function RegisterPage({ onLogin }) {
   return (
     <div className="auth-container">
       <div className="auth-card">
-        <h1>Construction Expense Manager</h1>
+        <h1>HomeBuild</h1>
         <h2>Register</h2>
         
         {error && <div className="alert error">{error}</div>}
@@ -48,6 +48,7 @@ function RegisterPage({ onLogin }) {
             <label>Full Name</label>
             <input
               type="text"
+              autoComplete="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
@@ -58,6 +59,7 @@ function RegisterPage({ onLogin }) {
             <label>Email</label>
             <input
               type="email"
+              autoComplete="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -68,6 +70,8 @@ function RegisterPage({ onLogin }) {
             <label>Password</label>
             <input
               type="password"
+              minLength={8}
+              autoComplete="new-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -78,6 +82,8 @@ function RegisterPage({ onLogin }) {
             <label>Confirm Password</label>
             <input
               type="password"
+              minLength={8}
+              autoComplete="new-password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required

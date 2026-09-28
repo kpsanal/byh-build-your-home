@@ -20,3 +20,27 @@ variable "repository_name" {
   type        = string
   default     = "construction-expense-app"
 }
+
+variable "database_name" {
+  description = "Name of the PostgreSQL database for the app."
+  type        = string
+  default     = "homebuild"
+}
+
+variable "database_user" {
+  description = "Application database user."
+  type        = string
+  default     = "homebuild_app"
+}
+
+variable "db_password" {
+  description = "Password for the PostgreSQL application user. Stored in Terraform state; protect state files."
+  type        = string
+  sensitive   = true
+}
+
+variable "database_tier" {
+  description = "Cloud SQL machine tier. Load test and resize before production traffic."
+  type        = string
+  default     = "db-custom-2-7680"
+}

@@ -7,6 +7,8 @@ A full-stack web application for tracking and managing construction project expe
 - **User Authentication**: Secure login and registration
 - **Project Management**: Create and manage multiple construction projects
 - **Expense Tracking**: Log expenses with detailed information (vendor, category, amount, date)
+- **Material Planning**: Track quantities, suppliers, unit costs, order status, and required dates
+- **Construction Timeline**: Plan work items with start dates, due dates, and progress status
 - **Categories**: Organize expenses by custom categories
 - **Budget Tracking**: Monitor project budgets vs. actual spending
 - **Reports & Analytics**: 
@@ -27,7 +29,7 @@ A full-stack web application for tracking and managing construction project expe
 
 ### Backend
 - Node.js with Express
-- SQLite database
+- SQLite for local development; PostgreSQL on GKE
 - JWT authentication
 - Bcrypt for password hashing
 
@@ -60,25 +62,28 @@ The frontend will start on `http://localhost:3000`
 ## Project Structure
 
 ```
-construction-expense-app/
+byh-build-your-home/
 ├── backend/
-│   ├── db/              # Database setup
-│   ├── routes/          # API routes
-│   ├── middleware/      # Authentication middleware
-│   ├── data/            # SQLite database
-│   ├── server.js        # Main server file
+│   ├── db/                 # Database setup
+│   ├── routes/             # API routes
+│   ├── middleware/         # Authentication middleware
+│   ├── Dockerfile
+│   ├── server.js
 │   └── package.json
 ├── frontend/
-│   ├── src/
-│   │   ├── pages/       # Page components
-│   │   ├── components/  # Reusable components
-│   │   ├── services/    # API calls
-│   │   ├── App.js
-│   │   └── index.js
+│   ├── src/                # React application
 │   ├── public/
+│   ├── Dockerfile
+│   ├── nginx.conf
 │   └── package.json
-└── .github/
-    └── copilot-instructions.md
+├── infra/
+│   └── gke/
+│       ├── k8s/app.yaml   # Kubernetes workloads and services
+│       ├── main.tf        # GKE and Artifact Registry
+│       ├── variables.tf
+│       ├── outputs.tf
+│       └── README.md      # GKE deployment instructions
+└── README.md
 ```
 
 ## API Endpoints
@@ -99,6 +104,18 @@ construction-expense-app/
 - `POST /api/expenses` - Create expense
 - `PUT /api/expenses/:id` - Update expense
 - `DELETE /api/expenses/:id` - Delete expense
+
+### Materials
+- `GET /api/materials` - List materials, optionally filtered by `project_id`
+- `POST /api/materials` - Add a planned or purchased material
+- `PUT /api/materials/:id` - Update a material
+- `DELETE /api/materials/:id` - Remove a material
+
+### Construction Timeline
+- `GET /api/schedule` - List tasks, optionally filtered by `project_id`
+- `POST /api/schedule` - Add a dated construction task
+- `PUT /api/schedule/:id` - Update a task and its progress
+- `DELETE /api/schedule/:id` - Remove a task
 
 ### Categories
 - `GET /api/categories` - Get all categories
@@ -137,11 +154,18 @@ construction-expense-app/
 ### Invoices
 - id, user_id, project_id, invoice_number, vendor, amount, date, due_date, status, notes, created_at
 
+### Materials
+- id, user_id, project_id, name, quantity, unit, unit_cost, vendor, status, needed_by, created_at
+
+### Schedule Tasks
+- id, user_id, project_id, title, description, start_date, due_date, status, created_at
+
 ## Security
 
 - Passwords are hashed using bcrypt
 - JWT tokens for authentication
 - API endpoints protected with middleware
+- Project data is scoped to the authenticated user; production PostgreSQL also enforces tenant-safe project/category references
 - Environment variables for sensitive data
 
 ## Environment Variables
@@ -151,6 +175,7 @@ construction-expense-app/
 PORT=5000
 JWT_SECRET=your_jwt_secret_key
 DATABASE_PATH=./data/expenses.db
+# Production uses DATABASE_URL for PostgreSQL instead of DATABASE_PATH
 NODE_ENV=development
 ```
 

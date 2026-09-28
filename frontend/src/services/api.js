@@ -44,6 +44,20 @@ export const categoryAPI = {
   delete: (id) => api.delete(`/categories/${id}`)
 };
 
+export const materialAPI = {
+  getAll: (projectId) => api.get('/materials', { params: projectId ? { project_id: projectId } : {} }),
+  create: (data) => api.post('/materials', data),
+  update: (id, data) => api.put(`/materials/${id}`, data),
+  delete: (id) => api.delete(`/materials/${id}`)
+};
+
+export const scheduleAPI = {
+  getAll: (projectId) => api.get('/schedule', { params: projectId ? { project_id: projectId } : {} }),
+  create: (data) => api.post('/schedule', data),
+  update: (id, data) => api.put(`/schedule/${id}`, data),
+  delete: (id) => api.delete(`/schedule/${id}`)
+};
+
 export const reportAPI = {
   getCategorySummary: () => api.get('/reports/summary/category'),
   getProjectSummary: () => api.get('/reports/summary/project'),
