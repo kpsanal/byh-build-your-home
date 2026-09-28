@@ -33,14 +33,21 @@ frontend/coverage/
 backend/data/*.db
 backend/data/*.db-*
 
-# Terraform and Vagrant state
-infra/virtualbox-k8s/.terraform/
-infra/virtualbox-k8s/*.tfstate
-infra/virtualbox-k8s/*.tfstate.*
-infra/virtualbox-k8s/crash.log
-infra/virtualbox-k8s/terraform.tfvars
-infra/virtualbox-k8s/terraform.tfvars.json
-infra/virtualbox-k8s/.vagrant/
+# Terraform state and local variables
+infra/**/.terraform/
+infra/**/*.tfstate
+infra/**/*.tfstate.*
+infra/**/crash.log
+infra/**/terraform.tfvars
+infra/**/terraform.tfvars.json
+
+# Local Google Cloud and Kubernetes credentials
+.gcloud/
+.kube/
+application_default_credentials.json
+service-account*.json
+*-service-account*.json
+*.kubeconfig
 
 # Operating system files
 .DS_Store
